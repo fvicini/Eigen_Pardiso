@@ -1,0 +1,10 @@
+#ifndef __TEST_MACRO_H
+#define __TEST_MACRO_H
+
+/// Enable VTK
+/// - 0 false
+/// - 1 true
+#cmakedefine01 ENABLE_MKL
+
+
+#endif

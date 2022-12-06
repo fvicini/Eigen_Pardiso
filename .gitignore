@@ -1,3 +1,11 @@
+*.user
+Debug
+Release
+debug
+release
+DEBUG
+RELEASE
+
 # Prerequisites
 *.d
 
