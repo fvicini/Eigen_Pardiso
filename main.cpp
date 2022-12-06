@@ -37,7 +37,7 @@ int main(int argc, char** argv)
   Eigen::VectorXd x;
 
 #if ENABLE_MKL
-  PardisoLU< SparseMatrix<double> > solver( A );
+  Eigen::PardisoLU<Eigen::SparseMatrix<double>> solver( A );
   x = solver.solve(b);
 #else
   Eigen::SparseLU<Eigen::SparseMatrix<double>> solver(A);
