@@ -10,7 +10,7 @@ set(EIGEN_PARDISO_INCLUDE ${PROJECT_NAME}_include)
 set(EIGEN_PARDISO_LINKED_LIBRARIES ${PROJECT_NAME}_linked_libraries)
 
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel" FORCE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel" FORCE)
 endif()
 
 set(ENABLE_MKL OFF CACHE BOOL "Enable MKL extension")
@@ -22,6 +22,12 @@ set(ENABLE_MKL OFF CACHE BOOL "Enable MKL extension")
 find_package(Eigen3 CONFIG REQUIRED)
 list(APPEND ${EIGEN_PARDISO_LINKED_LIBRARIES} Eigen3::Eigen)
 
+## MKL
+if(${ENABLE_MKL})
+    find_package(MKL CONFIG REQUIRED)
+    list(APPEND ${EIGEN_PARDISO_LINKED_LIBRARIES} MKL::MKL)
+    add_definitions(-DEIGEN_USE_MKL_ALL)
+endif()
 
 # Create public headers
 ###############################################################################################
@@ -30,25 +36,23 @@ set(EIGEN_PARDISO_ADDITIONAL_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR}/${EIGEN_PA
 list(APPEND ${EIGEN_PARDISO_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/Macro.hpp.in)
 
 foreach(header ${${EIGEN_PARDISO_HEADERS}})
-        get_filename_component(headerDirectory ${header} DIRECTORY)
-        get_filename_component(headerFileName ${header} NAME_WE)
-        get_filename_component(headerExtension ${header} EXT)
+    get_filename_component(headerDirectory ${header} DIRECTORY)
+    get_filename_component(headerFileName ${header} NAME_WE)
+    get_filename_component(headerExtension ${header} EXT)
 
-  if(${headerExtension} MATCHES ".hpp.in")
-    set(headerExtension ".hpp")
-    set(headerDirectory ${EIGEN_PARDISO_ADDITIONAL_INCLUDE_PATH})
+    if(${headerExtension} MATCHES ".hpp.in")
+        set(headerExtension ".hpp")
+        set(headerDirectory ${EIGEN_PARDISO_ADDITIONAL_INCLUDE_PATH})
 
-    configure_file(${header} ${headerDirectory}/${headerFileName}${headerExtension} @ONLY)
-  elseif(NOT ${headerExtension} MATCHES ".hpp" AND NOT ${headerExtension} MATCHES ".h")
-    message(SEND_ERROR "Header extension not recognized for file ${headerFileName}${headerExtension}")
-  endif()
+        configure_file(${header} ${headerDirectory}/${headerFileName}${headerExtension} @ONLY)
+    elseif(NOT ${headerExtension} MATCHES ".hpp" AND NOT ${headerExtension} MATCHES ".h")
+        message(SEND_ERROR "Header extension not recognized for file ${headerFileName}${headerExtension}")
+    endif()
 
-  list(APPEND ${EIGEN_PARDISO_PUBLIC_HEADERS} ${headerDirectory}/${headerFileName}${headerExtension})
+    list(APPEND ${EIGEN_PARDISO_PUBLIC_HEADERS} ${headerDirectory}/${headerFileName}${headerExtension})
 endforeach()
 
 list(APPEND ${EIGEN_PARDISO_INCLUDE} ${EIGEN_PARDISO_ADDITIONAL_INCLUDE_PATH})
-
-MESSAGE(WARNING ${${EIGEN_PARDISO_INCLUDE}})
 
 # Create library test executable
 ###############################################################################################
