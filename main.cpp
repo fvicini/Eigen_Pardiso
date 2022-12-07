@@ -26,7 +26,6 @@ int main(int argc, char** argv)
   triplets.push_back(Eigen::Triplet<double>(1, 0, 38.0));
   triplets.push_back(Eigen::Triplet<double>(1, 1, 85.0));
 
-
   A.setFromTriplets(triplets.begin(),
                     triplets.end());
   A.makeCompressed();
@@ -39,7 +38,8 @@ int main(int argc, char** argv)
   Eigen::VectorXd x;
 
 #if ENABLE_MKL
-  Eigen::PardisoLU<Eigen::SparseMatrix<double>> solver(A);
+  //Eigen::PardisoLU<Eigen::SparseMatrix<double>> solver(A);
+  Eigen::PardisoLDLT<Eigen::SparseMatrix<double>> solver(A);
   const Eigen::ComputationInfo solverResult = solver.info();
   if (solverResult != Eigen::ComputationInfo::Success)
   {
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
   x = solver.solve(b);
 #else
-  Eigen::SparseLU<Eigen::SparseMatrix<double>> solver(A);
+  Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver(A);
   const Eigen::ComputationInfo solverResult = solver.info();
   if (solverResult != Eigen::ComputationInfo::Success)
   {
