@@ -16,7 +16,7 @@ int main(int argc, char** argv)
   std::cerr.precision(16);
   std::cerr<< std::scientific<< "Test "<< test.transpose()<< std::endl;
 
-  Eigen::SparseMatrix<double, 0, MKL_INT64> A;
+  Eigen::SparseMatrix<double> A;
   A.resize(2, 2);
 
   std::list<Eigen::Triplet<double>> triplets;
@@ -37,8 +37,11 @@ int main(int argc, char** argv)
   Eigen::VectorXd x_Pardiso = Eigen::VectorXd::Zero(2);
 
 #if ENABLE_MKL
+  std::cerr<< "MKL ACTIVATION: "<< EIGEN_USE_MKL_ALL<< std::endl;
+
   //Eigen::PardisoLU<Eigen::SparseMatrix<double, 0, MKL_INT64>> solver_Pardiso;
   Eigen::PardisoLDLT<Eigen::SparseMatrix<double, 0, MKL_INT64>> solver_Pardiso(A);
+  //Eigen::PardisoLLT<Eigen::SparseMatrix<double, 0, MKL_INT64>> solver_Pardiso(A);
 
   solver_Pardiso.compute(A);
   const Eigen::ComputationInfo solverResult_Pardiso = solver_Pardiso.info();
@@ -52,7 +55,7 @@ int main(int argc, char** argv)
   x_Pardiso = solver_Pardiso.solve(b);
 #endif
 
-  Eigen::SimplicialLDLT<Eigen::SparseMatrix<double, 0, MKL_INT64>> solver_Eigen(A);
+  Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver_Eigen(A);
   const Eigen::ComputationInfo solverResult_Eigen = solver_Eigen.info();
   if (solverResult_Eigen != Eigen::ComputationInfo::Success)
   {

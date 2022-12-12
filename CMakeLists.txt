@@ -8,6 +8,9 @@ set(EIGEN_PARDISO_SOURCES ${PROJECT_NAME}_sources)
 set(EIGEN_PARDISO_HEADERS ${PROJECT_NAME}_headers)
 set(EIGEN_PARDISO_INCLUDE ${PROJECT_NAME}_include)
 set(EIGEN_PARDISO_LINKED_LIBRARIES ${PROJECT_NAME}_linked_libraries)
+set(EIGEN_PARDISO_COMPILE_DEFINITIONS ${PROJECT_NAME}_compile_definitions)
+
+
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel" FORCE)
@@ -26,7 +29,9 @@ list(APPEND ${EIGEN_PARDISO_LINKED_LIBRARIES} Eigen3::Eigen)
 if(${ENABLE_MKL})
     find_package(MKL CONFIG REQUIRED)
     list(APPEND ${EIGEN_PARDISO_LINKED_LIBRARIES} MKL::MKL)
-    add_definitions(-DEIGEN_USE_MKL_ALL)
+    list(APPEND ${EIGEN_PARDISO_COMPILE_DEFINITIONS} EIGEN_USE_MKL_ALL)
+    message(WARNING "${MKL_IMPORTED_TARGETS}")
+    message(WARNING "${MKL_LIBRARIES}")
 endif()
 
 # Create public headers
@@ -60,3 +65,4 @@ add_executable(${PROJECT_NAME} main.cpp ${${EIGEN_PARDISO_SOURCES}} ${${EIGEN_PA
 
 target_link_libraries(${PROJECT_NAME} ${${EIGEN_PARDISO_LINKED_LIBRARIES}})
 target_include_directories(${PROJECT_NAME} PRIVATE ${${EIGEN_PARDISO_INCLUDE}})
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${${EIGEN_PARDISO_COMPILE_DEFINITIONS}})
