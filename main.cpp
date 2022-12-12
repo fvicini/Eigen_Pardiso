@@ -37,11 +37,11 @@ int main(int argc, char** argv)
   Eigen::VectorXd x_Pardiso = Eigen::VectorXd::Zero(2);
 
 #if ENABLE_MKL
-  std::cerr<< "MKL ACTIVATION: "<< EIGEN_USE_MKL_ALL<< std::endl;
+  //std::cerr<< "MKL ACTIVATION: "<< EIGEN_USE_MKL_ALL<< std::endl;
 
-  //Eigen::PardisoLU<Eigen::SparseMatrix<double, 0, MKL_INT64>> solver_Pardiso;
-  Eigen::PardisoLDLT<Eigen::SparseMatrix<double, 0, MKL_INT64>> solver_Pardiso(A);
-  //Eigen::PardisoLLT<Eigen::SparseMatrix<double, 0, MKL_INT64>> solver_Pardiso(A);
+  //Eigen::PardisoLU<Eigen::SparseMatrix<double>> solver_Pardiso;
+  Eigen::PardisoLDLT<Eigen::SparseMatrix<double>> solver_Pardiso(A);
+  //Eigen::PardisoLLT<Eigen::SparseMatrix<double>> solver_Pardiso(A);
 
   solver_Pardiso.compute(A);
   const Eigen::ComputationInfo solverResult_Pardiso = solver_Pardiso.info();
